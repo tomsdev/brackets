@@ -162,15 +162,13 @@ define(function (require, exports, module) {
             });
         });
         
-        // select the first range
-        self.setSelectedIndex(0);
-        
         // attach to main container
         this.$htmlContent.append(this.$relatedContainer).append(this.$editorsDiv);
                 
         // Listen for clicks directly on us, so we can set focus back to the editor
         var clickHandler = this._onClick.bind(this);
         this.$htmlContent.on("click.MultiRangeInlineEditor", clickHandler);
+
         // Also handle mouseup in case the user drags a little bit
         this.$htmlContent.on("mouseup.MultiRangeInlineEditor", clickHandler);
     };
@@ -183,6 +181,9 @@ define(function (require, exports, module) {
         // floating related-container in order for CodeMirror to layout and
         // compute scrollbars
         this.$relatedContainer.height(this.$related.height());
+        
+        // select the first range
+        this.setSelectedIndex(0);
 
         // Call super
         MultiRangeInlineEditor.prototype.parentClass.onAdded.apply(this, arguments);
