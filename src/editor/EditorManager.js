@@ -166,7 +166,7 @@ define(function (require, exports, module) {
         if (inlineWidget.hasFocus()) {
             // Place cursor back on the line just above the inline (the line from which it was opened)
             // If cursor's already on that line, leave it be to preserve column position
-            var widgetLine = hostEditor._codeMirror.getInlineWidgetInfo(inlineWidget.id).line;
+            var widgetLine = hostEditor._codeMirror.getLineNumber(inlineWidget.info.line);
             var cursorLine = hostEditor.getCursorPos().line;
             if (cursorLine !== widgetLine) {
                 hostEditor.setCursorPos({ line: widgetLine, pos: 0 });
@@ -343,9 +343,12 @@ define(function (require, exports, module) {
         _editorHolder.height(editorAreaHt);    // affects size of "not-editor" placeholder as well
         
         if (_currentEditor) {
-            $(_currentEditor.getScrollerElement()).height(editorAreaHt);
-            if (!skipRefresh) {
-                _currentEditor.refresh(true);
+            var curRoot = _currentEditor.getRootElement();
+            if (!curRoot.style.height || $(curRoot).height() !== editorAreaHt) {
+                $(curRoot).height(editorAreaHt);
+                if (!skipRefresh) {
+                    _currentEditor.refreshAll(true);
+                }
             }
         }
     }
@@ -384,7 +387,8 @@ define(function (require, exports, module) {
         _currentEditorsDocument = document;
         _currentEditor = document._masterEditor;
         
-        _currentEditor.setVisible(true);
+        // skip refreshing the editor since we're going to refresh it in resizeEditor() later
+        _currentEditor.setVisible(true, false);
         _currentEditor.focus();
         
         // Window may have been resized since last time editor was visible, so kick it now
