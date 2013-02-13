@@ -171,6 +171,9 @@ define(function (require, exports, module) {
         case "hx":
             return "haxe";
 
+        case "ts":
+            return "text/typescript";
+
         default:
             console.log("Called EditorUtils.js _getModeFromFileExtensions with an unhandled file extension: " + ext);
             return "";
